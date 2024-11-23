@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "name in manifest.json",
-  "description": "description in manifest.json",
+  "name": "Arxiv-Citation-Helper",
+  "description": "View citation directly in arxiv HTML page",
   "options_ui": {
     "page": "src/pages/options/index.html"
   },
@@ -24,9 +24,8 @@
   "content_scripts": [
     {
       "matches": [
-        "http://*/*",
-        "https://*/*",
-        "<all_urls>"
+        "http://arxiv.org/*",
+        "https://arxiv.org/*"
       ],
       "js": [
         "src/pages/content/index.tsx"
