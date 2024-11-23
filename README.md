@@ -1,13 +1,13 @@
 <div align="center">
 <img src="public/icon-128.png" alt="logo"/>
 <h1> Arxiv Citations Viewer </h1>
-
+<a href="./README.zh-CN.md">中文</a>
 </div>
 
 ## Installation
 
 - Download the `arxiv-citation-helper.zip` from [releases](https://github.com/cy948/arxiv-citation-helper/releases).
-- open the [tab](chrome://extensions/) in your browser `chrome://extensions/`.
+- open the tab in your browser `chrome://extensions/`.
 - Turn on `Developer mode`.
 - Drag the `arxiv-citation-helper.zip` into this page.
 
