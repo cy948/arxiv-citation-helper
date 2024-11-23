@@ -2,9 +2,7 @@
   "manifest_version": 3,
   "name": "Arxiv-Citation-Helper",
   "description": "View citation directly in arxiv HTML page",
-  "options_ui": {
-    "page": "src/pages/options/index.html"
-  },
+  "options_ui": {},
   "action": {
     "default_popup": "src/pages/popup/index.html",
     "default_icon": {
