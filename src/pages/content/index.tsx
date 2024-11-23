@@ -14,8 +14,8 @@ root.render(
 );
 
 try {
+  const popupId = 'bib-item-popup';
   console.log('content script loaded');
-  // src/pages/content/hoverListener.ts
   document.addEventListener('mouseover', (event) => {
     const target = event.target as HTMLElement;
     if (target.tagName === 'A') {
@@ -39,25 +39,110 @@ try {
         }
         console.log('Found bib item:', bibItem);
 
-        // Create and show the popup
-        const popupId = 'bib-item-popup';
+        // ==============================
+        // ===== The popup content ======
+        // ==============================
+
+        // ------------------------------
+        // 1. Create and show the popup
+        // ------------------------------
         let popup = document.getElementById(popupId);
         if (!popup)
           popup = document.createElement('div');
         popup.id = 'bib-item-popup';
         popup.innerHTML = bibItem.innerHTML;
+
+        // ------------------------------
+        // 2. Minimal the content
+        // - Remove the button
+        // - Remove co-authors
+        // ------------------------------
+
         // Don't render `button`
         const button = popup.getElementsByTagName('button')[0];
         if (button) button.remove();
+
+        // Get the first author's name
+        const refnumSpan = popup.querySelector('.ltx_tag.ltx_role_refnum.ltx_tag_bibitem');
+        let firstAuthor = '';
+        if (refnumSpan) {
+          const textContent = refnumSpan.textContent || '';
+          firstAuthor = textContent.split(' et')[0].trim();
+        }
+
+        // Remove co-authors to minimize the popup
+        // Concat all sub strings
+        const bibblocks = popup.querySelectorAll('.ltx_bibblock');
+        let articalInfos = ''
+        bibblocks.forEach((block) => {
+          // Use regex to match the first author's name
+          const match = block.textContent?.match(new RegExp(firstAuthor, 'i'));
+          const matched = match && match.length > 0;
+          if (matched) {
+            block.remove();
+            let nextSibling = block.nextElementSibling;
+            while (nextSibling && nextSibling.classList.contains('ltx_bibblock')) {
+              nextSibling.remove();
+              nextSibling = block.nextElementSibling;
+            }
+          }
+
+          // Concat all sub strings
+          articalInfos += block.textContent || '';
+        });
+
+        // ------------------------------
+        // 3. Style the popup
+        // - position: fixed
+        // - color: support dark or light mode
+        // - size
+        //  - max-height: 20vh
+        //  - max-width: 80vw
+        // ------------------------------
+
+        // positioning: bottom-right
         popup.style.position = 'fixed';
         popup.style.bottom = '0';
-        popup.style.left = '50%';
-        popup.style.transform = 'translateX(-50%)';
-        // use --background-color
+        popup.style.right = '40%';
+        popup.style.transform = 'translateX(50%)';
+
+        // color
         popup.style.backgroundColor = 'var(--background-color)';
+
+        // size
         popup.style.border = '1px solid black';
         popup.style.padding = '10px';
-        popup.style.width = '90vw';
+        popup.style.maxWidth = '80vw';
+        popup.style.maxHeight = '20vh';
+
+        // make the content scrollable
+        popup.style.overflow = 'auto';
+
+        // ------------------------------
+        // 4. Render the buttons
+        // ------------------------------
+
+        // Create a button to goto the google scholar page
+        let buttonElement = document.getElementById('goto-google-scholar');
+        if (!buttonElement) 
+          buttonElement = document.createElement('button');
+        buttonElement.id = 'goto-google-scholar';
+        buttonElement.textContent = 'View in Google Scholar';
+        buttonElement.style.padding = '5px';
+        buttonElement.style.marginTop = '10px';
+        buttonElement.style.backgroundColor = 'var(--background-color)';
+        buttonElement.style.color = 'var(--color)';
+        buttonElement.style.border = '1px solid black';
+        buttonElement.style.cursor = 'pointer';
+        // Position on bottom right
+        buttonElement.style.position = 'absolute';
+        buttonElement.style.bottom = '0';
+        buttonElement.style.right = '0';
+        buttonElement.onclick = () => {
+          window.open(`https://scholar.google.com/scholar?hl=en&as_sdt=0%2C5&q=${encodeURI(articalInfos)}`);
+        };
+        popup.appendChild(buttonElement);
+
         document.body.appendChild(popup);
       }
     }
