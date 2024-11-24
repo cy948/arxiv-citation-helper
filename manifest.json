@@ -35,7 +35,6 @@
   "side_panel": {
     "default_path": "src/pages/panel/index.html"
   },
-  "devtools_page": "src/pages/devtools/index.html",
   "web_accessible_resources": [
     {
       "resources": [

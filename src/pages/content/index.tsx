@@ -5,16 +5,14 @@ div.id = '__root';
 document.body.appendChild(div);
 
 const rootContainer = document.querySelector('#__root');
+const popupId = 'bib-item-popup';
 if (!rootContainer) throw new Error("Can't find Content root element");
 const root = createRoot(rootContainer);
 root.render(
-  <div className='absolute bottom-0 left-0 text-lg text-black bg-amber-400 z-50'  >
-    content script <span className='your-class'>loaded</span>
-  </div>
+  <div id={popupId}></div>
 );
 
 try {
-  const popupId = 'bib-item-popup';
   console.log('content script loaded');
   document.addEventListener('mouseover', (event) => {
     const target = event.target as HTMLElement;
@@ -34,7 +32,7 @@ try {
         const bibItemNumber = match ? match[1] : '';
         const bibItem = document.getElementById(`${bibItemNumber}`);
         if (!bibItem) {
-          console.warn('No bib item found with id:', `bib.bib${bibItemNumber}`);
+          console.warn('No bib item found with id:', `${bibItemNumber}`);
           return;
         }
         console.log('Found bib item:', bibItem);
@@ -47,9 +45,11 @@ try {
         // 1. Create and show the popup
         // ------------------------------
         let popup = document.getElementById(popupId);
-        if (!popup)
+        if (!popup){
           popup = document.createElement('div');
-        popup.id = 'bib-item-popup';
+          popup.id = popupId;
+        }
+
         popup.innerHTML = bibItem.innerHTML;
 
         // ------------------------------
