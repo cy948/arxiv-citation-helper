@@ -1,10 +1,10 @@
 import { createRoot } from 'react-dom/client';
 import './style.css'
 const div = document.createElement('div');
-div.id = '__root';
+div.id = 'root';
 document.body.appendChild(div);
 
-const rootContainer = document.querySelector('#__root');
+const rootContainer = document.querySelector('#root');
 const popupId = 'bib-item-popup';
 if (!rootContainer) throw new Error("Can't find Content root element");
 const root = createRoot(rootContainer);
@@ -16,12 +16,18 @@ try {
   console.log('content script loaded');
   document.addEventListener('mouseover', (event) => {
     const target = event.target as HTMLElement;
-    if (target.tagName === 'A') {
-      console.log('Hovered over an <a> element with class:', target.className);
+    if (target.tagName === 'A' || target.tagName === 'SPAN') {
       // If is a bib item
-      if (target.className === 'ltx_ref') {
+      if (target.className === 'ltx_ref' || target.className === 'ltx_text') {
         // find the bib item
-        const href = target.getAttribute('href');
+        let href = target.getAttribute('href');
+        if (!href) {
+          // If the target is a span, find the parent element
+          const parent = target.parentElement;
+          if (parent) {
+            href = parent.getAttribute('href');
+          }
+        }
         if (!href) {
           console.warn('No href attribute found on the bib item');
           return;

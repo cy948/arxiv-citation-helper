@@ -1,6 +1,6 @@
 {
   "name": "arxiv-citation-helper",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "A browser addon help to view citations in arxiv's HTML reader.",
   "license": "MIT",
   "repository": {
