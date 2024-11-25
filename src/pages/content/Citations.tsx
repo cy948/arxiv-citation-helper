@@ -1,14 +1,43 @@
 import { useEffect, useState } from 'react'
 
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
+
+import {
+    ToggleGroup,
+    ToggleGroupItem,
+} from "@/components/ui/toggle-group"
+
+import { useToast } from "@/hooks/use-toast"
+
+
 export default function Citations() {
     const [citation, setCitation] = useState<string>('');
     const [firstAuthor, setFirstAuthor] = useState<string>('');
     const [citationInfo, setCitationInfo] = useState<string>('');
-    const [showFull, setShowFull] = useState<boolean>(true);
+    const { toast } = useToast();
 
     const handleViewOnGoogleScholar = () => {
         const url = `https://scholar.google.com/scholar?q=${encodeURI(citationInfo)}`;
         window.open(url);
+    }
+
+    const handleRadioChange = (value: string) => {
+        switch (value) {
+            case 'copy':
+                navigator.clipboard.writeText(citation);
+                toast({
+                    title: 'Copied',
+                })
+                break;
+            case 'google_scholar':
+                handleViewOnGoogleScholar();
+                break;
+        }
     }
 
     // Listen mouseover event
@@ -29,27 +58,36 @@ export default function Citations() {
             }
         });
     });
+
     return (
-        <div className={'fixed bottom-0 right-[40%] translate-x-[50%] arxiv-background border border-black p-2.5 max-w-[80vw] max-h-[20vh] overflow-auto'} id='bib-item-popup'>
-            <div className='text-lg font-bold'>{firstAuthor}</div>
-            <div dangerouslySetInnerHTML={{ __html: citation }} />
-            <button 
-                className="p-1 mt-2.5 border border-black cursor-pointer absolute bottom-0 right-0 arxiv-background" 
-                onClick={handleViewOnGoogleScholar}
-                >
-                View on Google Scholar
-            </button>
+        <div>
+            <div className={'fixed bottom-0 right-[40%] translate-x-[50%] arxiv-background w-[80vw] max-h-[20vh] p-2.5'}>
+                <Accordion type="single" collapsible className='w-full'>
+                    <AccordionItem value="item-1">
+                        <AccordionTrigger className='text-base w-full py-1'>
+                            {firstAuthor}
+                        </AccordionTrigger>
+                        <AccordionContent>
+                            <>
+                                <div dangerouslySetInnerHTML={{ __html: citation }}></div>
+                                <ToggleGroup type="single" onValueChange={handleRadioChange}>
+                                    <ToggleGroupItem value="copy">Copy</ToggleGroupItem>
+                                    <ToggleGroupItem value="google_scholar">Google Scholar</ToggleGroupItem>
+                                </ToggleGroup>
+                            </>
+                        </AccordionContent>
+                    </AccordionItem>
+                </Accordion>
+            </div>
         </div>
-    );
+    )
 }
 
-function extractCitationAndAuthor(document: Document, target: HTMLElement): 
-    { 
-        citation: HTMLElement;
-        firstAuthor: string;
-        citationInfo: string;
-    } | undefined 
-{
+function extractCitationAndAuthor(document: Document, target: HTMLElement): {
+    citation: HTMLElement;
+    firstAuthor: string;
+    citationInfo: string;
+} | undefined {
     let citation;
     let firstAuthor = '';
     // find the bib item

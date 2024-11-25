@@ -20,7 +20,8 @@
       "@src/*": ["src/*"],
       "@assets/*": ["src/assets/*"],
       "@locales/*": ["src/locales/*"],
-      "@pages/*": ["src/pages/*"]
+      "@pages/*": ["src/pages/*"],
+      "@/*": ["./src/*"]
     }
   },
   "include": [
@@ -29,5 +30,5 @@
     "vite.config.base.ts",
     "vite.config.chrome.ts",
     "vite.config.firefox.ts"
-  ],
+, "src/lib"  ],
 }
