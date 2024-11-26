@@ -71,5 +71,4 @@ module.exports = {
 	},
 	prefix: '',
 	plugins: [require("tailwindcss-animate")],
-	darkMode: 'media',
 }
