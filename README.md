@@ -22,6 +22,6 @@ Hover the citation link, then you will see the bibliography below, click `View i
 ## Roadmap
 
 - [x] Show Bib (proto)
-- [ ] Show figures
+- [x] Show figures
 - [ ] I18n
 - [ ] optimize codes ...
